@@ -54,7 +54,7 @@ RSpec.describe SidekiqAlive do
     k.liveness_key = 'key'
     expect(k.liveness_key).to eq 'key'
 
-    expect(k.time_to_live).to eq 10 * 60
+    expect(k.time_to_live).to eq 5 * 60
     k.time_to_live = 2 * 60
     expect(k.time_to_live).to eq 2 * 60
 
@@ -62,9 +62,9 @@ RSpec.describe SidekiqAlive do
     k.callback = proc { 'hello' }
     expect(k.callback.call).to eq 'hello'
 
-    expect(k.queue_prefix).to eq :sidekiq_alive
-    k.queue_prefix = :other
-    expect(k.queue_prefix).to eq :other
+    expect(k.queue).to eq :sidekiq_alive
+    k.queue = :other
+    expect(k.queue).to eq :other
   end
 
   describe '::start' do
@@ -86,13 +86,13 @@ RSpec.describe SidekiqAlive do
 
   it '::store_alive_key" stores key with the expected ttl' do
     redis = SidekiqAlive.redis
-    expect(redis.ttl(SidekiqAlive.current_lifeness_key)).to eq -2
+    expect(redis.ttl(SidekiqAlive.current_liveness_key)).to eq -2
     SidekiqAlive.store_alive_key
-    expect(redis.ttl(SidekiqAlive.current_lifeness_key)).to eq SidekiqAlive.config.time_to_live
+    expect(redis.ttl(SidekiqAlive.current_liveness_key)).to eq SidekiqAlive.config.time_to_live
   end
 
-  it '::current_lifeness_key' do
-    expect(SidekiqAlive.current_lifeness_key).to include '::test-hostname'
+  it '::current_liveness_key' do
+    expect(SidekiqAlive.current_liveness_key).to include '::test-hostname'
   end
   it '::hostname' do
     expect(SidekiqAlive.hostname).to eq 'test-hostname'

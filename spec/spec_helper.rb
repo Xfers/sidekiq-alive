@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'sidekiq_alive'
+require 'sidekiq-alive'
 require 'rspec-sidekiq'
 require 'mock_redis'
 require 'rack/test'

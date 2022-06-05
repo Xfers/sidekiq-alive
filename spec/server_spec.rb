@@ -49,14 +49,14 @@ RSpec.describe SidekiqAlive::Server do
   describe 'responses' do
     it 'responds with success when the service is alive' do
       allow(SidekiqAlive).to receive(:alive?) { true }
-      get '/'
+      get SidekiqAlive.config.liveness_probe_path
       expect(last_response).to be_ok
       expect(last_response.body).to eq('Alive!')
     end
 
     it 'responds with an error when the service is not alive' do
       allow(SidekiqAlive).to receive(:alive?) { false }
-      get '/'
+      get SidekiqAlive.config.liveness_probe_path
       expect(last_response).not_to be_ok
       expect(last_response.body).to eq("Can't find the alive key")
     end
@@ -66,6 +66,19 @@ RSpec.describe SidekiqAlive::Server do
       expect(last_response).not_to be_ok
       expect(last_response.body).to eq("Not found")
     end
+
+    it 'responds busy count' do
+      allow(described_class).to receive(:sidekiq_busy_count) { 10 }
+      get SidekiqAlive.config.sidekiq_busy_count_path
+      expect(last_response).to be_ok
+      expect(last_response.body).to eq("10")
+
+      allow(described_class).to receive(:sidekiq_busy_count) { 0 }
+      get SidekiqAlive.config.sidekiq_busy_count_path
+      expect(last_response).to be_ok
+      expect(last_response.body).to eq("0")
+    end
+
   end
 
   describe 'SidekiqAlive setup host' do
@@ -116,21 +129,24 @@ RSpec.describe SidekiqAlive::Server do
 
   describe 'SidekiqAlive setup path' do
     before do
-      ENV['SIDEKIQ_ALIVE_PATH'] = '/sidekiq-probe'
+      ENV['SIDEKIQ_ALIVE_LIVENESS_PROBE_PATH'] = '/sidekiq-liveness-probe'
+      ENV['SIDEKIQ_ALIVE_SIDEKIQ_BUSY_COUNT_PATH'] = '/sidekiq-busy-probe'
       SidekiqAlive.config.set_defaults
     end
 
     after do
-      ENV['SIDEKIQ_ALIVE_PATH'] = nil
+      ENV['SIDEKIQ_ALIVE_LIVENESS_PROBE_PATH'] = nil
+      ENV['SIDEKIQ_ALIVE_SIDEKIQ_BUSY_COUNT_PATH'] = nil
     end
 
-    it 'respects the SIDEKIQ_ALIVE_PORT environment variable' do
-      expect(described_class.path).to eq '/sidekiq-probe'
+    it 'respects the path environment variable' do
+      expect(described_class.liveness_probe_path).to eq '/sidekiq-liveness-probe'
+      expect(described_class.sidekiq_busy_count_path).to eq '/sidekiq-busy-probe'
     end
 
     it 'responds ok to the given path' do
       allow(SidekiqAlive).to receive(:alive?) { true }
-      get '/sidekiq-probe'
+      get '/sidekiq-liveness-probe'
       expect(last_response).to be_ok
     end
   end

@@ -4,13 +4,22 @@ require 'rack'
 
 module SidekiqAlive
   class Server
+    @sidekiq_processes = Sidekiq::ProcessSet.new
     class << self
       def run!
-        handler =  Rack::Handler.get(server)
+        @handler = Rack::Handler.get(server)
 
-        Signal.trap('TERM') { handler.shutdown }
+        Signal.trap('TERM') { @handler.shutdown } if SidekiqAlive.config.server_mode == :fork
 
-        handler.run(self, Port: port, Host: host, AccessLog: [], Logger: SidekiqAlive.logger)
+        begin
+          @handler.run(self, Port: port, Host: host, AccessLog: [], Logger: SidekiqAlive.logger)
+        rescue Errno::EADDRINUSE
+          SidekiqAlive.logger.warn("[SidekiqAlive] Other sidkiq processes binded the #{host}:#{port}")
+        end
+      end
+
+      def shutdown!
+        @handler.shutdown if SidekiqAlive.config.server_mode == :thread
       end
 
       def host
@@ -21,23 +30,37 @@ module SidekiqAlive
         SidekiqAlive.config.port
       end
 
-      def path
-        SidekiqAlive.config.path
+      def liveness_probe_path
+        SidekiqAlive.config.liveness_probe_path
+      end
+
+      def sidekiq_busy_count_path
+        SidekiqAlive.config.sidekiq_busy_count_path
       end
 
       def server
         SidekiqAlive.config.server
       end
 
+      def sidekiq_busy_count
+        hostname = SidekiqAlive.hostname
+        @sidekiq_processes.select { |process| process["hostname"] == hostname }.sum {|process| process["busy"] }
+      end
+
       def call(env)
-        if Rack::Request.new(env).path != path
-          [404, {}, ['Not found']]
-        elsif SidekiqAlive.alive?
-          [200, {}, ['Alive!']]
+        case Rack::Request.new(env).path
+        when liveness_probe_path
+          if SidekiqAlive.alive?
+            [200, {}, ['Alive!']]
+          else
+            response = "Can't find the alive key"
+            SidekiqAlive.logger.error(response)
+            [404, {}, [response]]
+          end
+        when sidekiq_busy_count_path
+          [200, {}, [sidekiq_busy_count.to_s]]
         else
-          response = "Can't find the alive key"
-          SidekiqAlive.logger.error(response)
-          [404, {}, [response]]
+          [404, {}, ['Not found']]
         end
       end
     end

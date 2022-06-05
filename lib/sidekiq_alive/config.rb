@@ -6,13 +6,15 @@ module SidekiqAlive
 
     attr_accessor :host,
                   :port,
-                  :path,
+                  :liveness_probe_path,
+                  :sidekiq_busy_count_path,
                   :liveness_key,
                   :time_to_live,
                   :callback,
                   :registered_instance_key,
-                  :queue_prefix,
+                  :queue,
                   :server,
+                  :server_mode,
                   :custom_liveness_probe
 
     def initialize
@@ -22,13 +24,15 @@ module SidekiqAlive
     def set_defaults
       @host = ENV.fetch('SIDEKIQ_ALIVE_HOST', '0.0.0.0')
       @port = ENV.fetch('SIDEKIQ_ALIVE_PORT', 7433)
-      @path = ENV.fetch('SIDEKIQ_ALIVE_PATH', '/')
+      @liveness_probe_path = ENV.fetch('SIDEKIQ_ALIVE_LIVENESS_PROBE_PATH', '/liveness_probe')
+      @sidekiq_busy_count_path = ENV.fetch('SIDEKIQ_ALIVE_SIDEKIQ_BUSY_COUNT_PATH', '/busy_count')
       @liveness_key = 'SIDEKIQ::LIVENESS_PROBE_TIMESTAMP'
-      @time_to_live = 10 * 60
+      @time_to_live = 5 * 60
       @callback = proc {}
       @registered_instance_key = 'SIDEKIQ_REGISTERED_INSTANCE'
-      @queue_prefix = :sidekiq_alive
+      @queue = :sidekiq_alive
       @server = ENV.fetch('SIDEKIQ_ALIVE_SERVER', 'webrick')
+      @server_mode = :thread
       @custom_liveness_probe = proc { true }
     end
 

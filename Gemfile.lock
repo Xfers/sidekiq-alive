@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sidekiq_alive (2.1.5)
+    sidekiq-alive (3.0.0)
       sidekiq
       webrick
 
@@ -54,7 +54,7 @@ DEPENDENCIES
   rake (~> 13.0)
   rspec (~> 3.0)
   rspec-sidekiq (~> 3.0)
-  sidekiq_alive!
+  sidekiq-alive!
 
 BUNDLED WITH
    2.2.22
