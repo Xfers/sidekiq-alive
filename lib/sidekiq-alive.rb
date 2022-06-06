@@ -199,4 +199,4 @@ end
 require 'sidekiq_alive/worker'
 require 'sidekiq_alive/server'
 
-SidekiqAlive.start if ENV.fetch('DISABLE_SIDEKIQ_ALIVE', '') == ''
+SidekiqAlive.start if ENV.fetch('DISABLE_SIDEKIQ_ALIVE', '') == '' && (ENV["RAILS_ENV"].to_s.downcase != "test" || ENV["RACK_ENV"].to_s.downcase != "test")

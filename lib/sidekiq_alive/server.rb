@@ -4,9 +4,9 @@ require 'rack'
 
 module SidekiqAlive
   class Server
-    @sidekiq_processes = Sidekiq::ProcessSet.new
     class << self
       def run!
+        @sidekiq_processes = Sidekiq::ProcessSet.new
         @handler = Rack::Handler.get(server)
 
         Signal.trap('TERM') { @handler.shutdown } if SidekiqAlive.config.server_mode == :fork
