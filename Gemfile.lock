@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sidekiq-alive (3.0.0)
+    sidekiq-alive (3.1.0)
       sidekiq
       webrick
 

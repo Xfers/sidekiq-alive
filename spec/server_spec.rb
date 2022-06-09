@@ -48,14 +48,14 @@ RSpec.describe SidekiqAlive::Server do
 
   describe 'responses' do
     it 'responds with success when the service is alive' do
-      allow(SidekiqAlive).to receive(:alive?) { true }
+      allow(described_class).to receive(:sidekiq_process_alive?) { true }
       get SidekiqAlive.config.liveness_probe_path
       expect(last_response).to be_ok
       expect(last_response.body).to eq('Alive!')
     end
 
     it 'responds with an error when the service is not alive' do
-      allow(SidekiqAlive).to receive(:alive?) { false }
+      allow(described_class).to receive(:sidekiq_process_alive?) { false }
       get SidekiqAlive.config.liveness_probe_path
       expect(last_response).not_to be_ok
       expect(last_response.body).to eq("Can't find the alive key")
@@ -145,7 +145,7 @@ RSpec.describe SidekiqAlive::Server do
     end
 
     it 'responds ok to the given path' do
-      allow(SidekiqAlive).to receive(:alive?) { true }
+      allow(described_class).to receive(:sidekiq_process_alive?) { true }
       get '/sidekiq-liveness-probe'
       expect(last_response).to be_ok
     end

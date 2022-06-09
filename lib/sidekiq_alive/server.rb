@@ -6,7 +6,6 @@ module SidekiqAlive
   class Server
     class << self
       def run!
-        @sidekiq_processes = Sidekiq::ProcessSet.new
         @handler = Rack::Handler.get(server)
 
         Signal.trap('TERM') { @handler.shutdown } if SidekiqAlive.config.server_mode == :fork
@@ -44,13 +43,20 @@ module SidekiqAlive
 
       def sidekiq_busy_count
         hostname = SidekiqAlive.hostname
-        @sidekiq_processes.select { |process| process["hostname"] == hostname }.sum {|process| process["busy"] }
+        sidekiq_processes = Sidekiq::ProcessSet.new
+        sidekiq_processes.select { |process| process["hostname"] == hostname }.sum { |process| process["busy"] }
+      end
+
+      def sidekiq_process_alive?
+        hostname = SidekiqAlive.hostname
+        sidekiq_processes = Sidekiq::ProcessSet.new
+        sidekiq_processes.any? { |ps| ps["hostname"] == hostname }
       end
 
       def call(env)
         case Rack::Request.new(env).path
         when liveness_probe_path
-          if SidekiqAlive.alive?
+          if sidekiq_process_alive?
             [200, {}, ['Alive!']]
           else
             response = "Can't find the alive key"
