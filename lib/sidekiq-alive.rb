@@ -1,6 +1,4 @@
 require 'sidekiq'
-require 'sidekiq/api'
-require 'sidekiq/util'
 require 'singleton'
 require 'sidekiq_alive/version'
 require 'sidekiq_alive/config'

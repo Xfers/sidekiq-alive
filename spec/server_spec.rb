@@ -2,6 +2,7 @@
 
 require 'rack/test'
 require 'net/http'
+require 'sidekiq_alive/server'
 RSpec.describe SidekiqAlive::Server do
   include Rack::Test::Methods
 
