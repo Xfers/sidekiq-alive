@@ -11,12 +11,12 @@ RSpec.describe SidekiqAlive::Server do
   describe '#run!' do
     subject { app.run! }
 
-    before { allow(Rack::Handler).to receive(:get).with('webrick').and_return(fake_webrick) }
+    before { allow(Rackup::Handler).to receive(:get).with(:puma).and_return(fake_puma) }
 
-    let(:fake_webrick) { double }
+    let(:fake_puma) { double }
 
     it 'runs the handler with sidekiq_alive logger, host and no access logs' do
-      expect(fake_webrick).to receive(:run).with(
+      expect(fake_puma).to receive(:run).with(
         described_class,
         hash_including(Logger: SidekiqAlive.logger,
                        Host: '0.0.0.0',
@@ -37,7 +37,7 @@ RSpec.describe SidekiqAlive::Server do
       end
 
       it 'respects the SIDEKIQ_ALIVE_HOST environment variable' do
-        expect(fake_webrick).to receive(:run).with(
+        expect(fake_puma).to receive(:run).with(
           described_class,
           hash_including(Host: '1.2.3.4')
         )
@@ -109,7 +109,7 @@ RSpec.describe SidekiqAlive::Server do
 
     it 'respects the SIDEKIQ_ALIVE_PORT environment variable' do
       expect(described_class.port).to eq '4567'
-      expect(described_class.server).to eq 'webrick'
+      expect(described_class.server).to eq 'puma'
     end
   end
 

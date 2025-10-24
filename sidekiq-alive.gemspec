@@ -5,8 +5,8 @@ require 'sidekiq_alive/version'
 Gem::Specification.new do |spec|
   spec.name          = 'sidekiq-alive'
   spec.version       = SidekiqAlive::VERSION
-  spec.authors       = ['Artur Pañach', 'Arlo Liu']
-  spec.email         = ['arturictus@gmail.com', 'arlo.liu@fazzfinancial.com']
+  spec.authors       = ['Artur Pañach', 'Arlo Liu', 'Eshton Robateau']
+  spec.email         = ['arturictus@gmail.com', 'arlo.liu@fazzfinancial.com', 'eshton.robateau@fazzfinancial.com']
 
   spec.summary       = 'Liveness probe for sidekiq on Kubernetes deployments.'
   spec.description   = 'SidekiqAlive offers a solution to add liveness probe of a Sidekiq instance.
@@ -32,9 +32,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '> 1.16'
   spec.add_development_dependency 'mock_redis'
   spec.add_development_dependency 'rack-test'
-  spec.add_development_dependency 'rake', '~> 13.0'
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'rspec-sidekiq', '~> 3.0'
-  spec.add_dependency 'sidekiq'
-  spec.add_dependency 'webrick'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'rspec-sidekiq', '> 5'
+  spec.add_dependency 'sidekiq', '> 7'
+  spec.add_dependency 'puma'
+  spec.add_dependency 'rack'
+  spec.add_dependency 'rackup'
 end
