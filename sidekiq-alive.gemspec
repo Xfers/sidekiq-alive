@@ -5,8 +5,8 @@ require 'sidekiq_alive/version'
 Gem::Specification.new do |spec|
   spec.name          = 'sidekiq-alive'
   spec.version       = SidekiqAlive::VERSION
-  spec.authors       = ['Artur Pañach', 'Arlo Liu']
-  spec.email         = ['arturictus@gmail.com', 'arlo.liu@fazzfinancial.com']
+  spec.authors       = ['Artur Pañach', 'Arlo Liu', 'Eshton Robateau']
+  spec.email         = ['arturictus@gmail.com', 'arlo.liu@fazzfinancial.com', 'eshton.robateau@fazzfinancial.com']
 
   spec.summary       = 'Liveness probe for sidekiq on Kubernetes deployments.'
   spec.description   = 'SidekiqAlive offers a solution to add liveness probe of a Sidekiq instance.
