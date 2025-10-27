@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sidekiq-alive (4.0.0)
+    sidekiq-alive (4.0.1)
       puma
       rack
       rackup
