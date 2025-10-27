@@ -7,7 +7,7 @@ module SidekiqAlive
   class Server
     class << self
       def run!
-        @handler = Rackup::Handler.default
+        @handler = Rackup::Handler.get(server)
 
         Signal.trap('TERM') { @handler.shutdown } if SidekiqAlive.config.server_mode == :fork
 

@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rspec-sidekiq', '> 5'
   spec.add_dependency 'sidekiq', '> 7'
-  spec.add_dependency 'puma'
+  spec.add_dependency 'falcon'
   spec.add_dependency 'rack'
   spec.add_dependency 'rackup'
 end

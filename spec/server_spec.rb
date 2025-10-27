@@ -11,12 +11,12 @@ RSpec.describe SidekiqAlive::Server do
   describe '#run!' do
     subject { app.run! }
 
-    before { allow(Rackup::Handler).to receive(:get).with(:puma).and_return(fake_puma) }
+    before { allow(Rackup::Handler).to receive(:get).with("falcon").and_return(fake_falcon) }
 
-    let(:fake_puma) { double }
+    let(:fake_falcon) { double }
 
     it 'runs the handler with sidekiq_alive logger, host and no access logs' do
-      expect(fake_puma).to receive(:run).with(
+      expect(fake_falcon).to receive(:run).with(
         described_class,
         hash_including(Logger: SidekiqAlive.logger,
                        Host: '0.0.0.0',
@@ -37,7 +37,7 @@ RSpec.describe SidekiqAlive::Server do
       end
 
       it 'respects the SIDEKIQ_ALIVE_HOST environment variable' do
-        expect(fake_puma).to receive(:run).with(
+        expect(fake_falcon).to receive(:run).with(
           described_class,
           hash_including(Host: '1.2.3.4')
         )
@@ -109,13 +109,13 @@ RSpec.describe SidekiqAlive::Server do
 
     it 'respects the SIDEKIQ_ALIVE_PORT environment variable' do
       expect(described_class.port).to eq '4567'
-      expect(described_class.server).to eq 'puma'
+      expect(described_class.server).to eq 'falcon'
     end
   end
 
   describe 'SidekiqAlive setup server' do
     before do
-      ENV['SIDEKIQ_ALIVE_SERVER'] = 'puma'
+      ENV['SIDEKIQ_ALIVE_SERVER'] = 'falcon'
       SidekiqAlive.config.set_defaults
     end
 
@@ -124,7 +124,7 @@ RSpec.describe SidekiqAlive::Server do
     end
 
     it 'respects the SIDEKIQ_ALIVE_PORT environment variable' do
-      expect(described_class.server).to eq 'puma'
+      expect(described_class.server).to eq 'falcon'
     end
   end
 

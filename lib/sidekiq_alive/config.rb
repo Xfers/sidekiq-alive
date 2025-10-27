@@ -22,7 +22,7 @@ module SidekiqAlive
       @liveness_probe_path = ENV.fetch('SIDEKIQ_ALIVE_LIVENESS_PROBE_PATH', '/liveness_probe')
       @sidekiq_busy_count_path = ENV.fetch('SIDEKIQ_ALIVE_SIDEKIQ_BUSY_COUNT_PATH', '/busy_count')
       @queue = :default
-      @server = ENV.fetch('SIDEKIQ_ALIVE_SERVER', 'puma')
+      @server = ENV.fetch('SIDEKIQ_ALIVE_SERVER', 'falcon')
       @server_mode = :thread
     end
   end
