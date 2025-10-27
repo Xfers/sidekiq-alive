@@ -14,7 +14,7 @@ module SidekiqAlive
         begin
           @handler.run(self, Port: port, Host: host,
                        AccessLog: [], Logger: SidekiqAlive.logger,
-                       pidfile: nil, state_path: nil)
+                       pidfile: nil, state: nil)
         rescue Errno::EADDRINUSE
           SidekiqAlive.logger.warn("[SidekiqAlive] Other sidkiq processes binded the #{host}:#{port}")
         end
