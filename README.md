@@ -9,7 +9,7 @@ Besides the original features. this project modified and added some features.
 
 * Support multi-process sidekiq mode (`sidekiqswarm`)
 
-* Support both fork/threaded server mode (default: `SidekiqAlive.config.server_mode = :thread`)
+* Support both fork/threaded server mode (default: `SidekiqAlive.config.server_mode = :fork`)
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
