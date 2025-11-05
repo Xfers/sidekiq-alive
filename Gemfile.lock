@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sidekiq-alive (4.0.2)
+    sidekiq-alive (4.0.3)
       falcon
       rack
       rackup

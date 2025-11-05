@@ -9,7 +9,7 @@ module SidekiqAlive
       def run!
         @handler = Rackup::Handler.get(server)
 
-        Signal.trap('TERM') { @handler.shutdown } if SidekiqAlive.config.server_mode == :fork
+        Signal.trap('TERM') { @handler.shutdown if @handler.respond_to?(:shutdown) } if SidekiqAlive.config.server_mode == :fork
 
         begin
           @handler.run(self, Port: port, Host: host,
@@ -21,6 +21,7 @@ module SidekiqAlive
       end
 
       def shutdown!
+        return unless @handler.respond_to?(:shutdown)
         @handler.shutdown if SidekiqAlive.config.server_mode == :thread
       end
 
